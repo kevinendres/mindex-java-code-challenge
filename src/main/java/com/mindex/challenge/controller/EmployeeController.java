@@ -1,7 +1,11 @@
 package com.mindex.challenge.controller;
 
 import com.mindex.challenge.data.Employee;
+import com.mindex.challenge.data.ReportingStructure;
 import com.mindex.challenge.service.EmployeeService;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +38,12 @@ public class EmployeeController {
 
         employee.setEmployeeId(id);
         return employeeService.update(employee);
+    }
+
+    @GetMapping("/employee/{id}/reportingStructure")
+    public ReportingStructure getReportingStructure(@PathVariable String id) {
+        LOG.debug("Received employee reporting structure request for id [{}]", id);
+
+        return employeeService.getReportingStructure(id);
     }
 }

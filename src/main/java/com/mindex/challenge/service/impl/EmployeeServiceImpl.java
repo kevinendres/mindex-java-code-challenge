@@ -2,7 +2,11 @@ package com.mindex.challenge.service.impl;
 
 import com.mindex.challenge.dao.EmployeeRepository;
 import com.mindex.challenge.data.Employee;
+import com.mindex.challenge.data.ReportingStructure;
 import com.mindex.challenge.service.EmployeeService;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +49,37 @@ public class EmployeeServiceImpl implements EmployeeService {
         LOG.debug("Updating employee [{}]", employee);
 
         return employeeRepository.save(employee);
+    }
+
+    /*
+        Calculate the transitive total number of direct reports for a given employee.
+     */
+    @Override
+    public ReportingStructure getReportingStructure(String id) {
+        Employee employee = this.read(id);
+
+        int numberOfReports = 0;
+        // Use DFS approach to traverse the reporting tree
+        Deque<Employee> employeeStack = new ArrayDeque<>();
+        employeeStack.push(employee);
+        while (!employeeStack.isEmpty()) {
+            Employee currentEmployee = employeeStack.pop();
+            List<Employee> directReports = currentEmployee.getDirectReports();
+            if (directReports != null) {
+                numberOfReports += directReports.size();
+                for (Employee reportStub : directReports) {
+                    // Employee objects in the directReports list are stubs, i.e. they only contain
+                    // the employeeId of the reports, not the full Employee record needed to check
+                    // their directReports field
+                    Employee report = employeeRepository.findByEmployeeId(reportStub.getEmployeeId());
+                    if (report == null) {
+                        throw new RuntimeException("Invalid employeeId: " + reportStub.getEmployeeId());
+                    }
+                    employeeStack.push(report);
+                }
+            }
+        }
+        String name = employee.getFirstName() + " " + employee.getLastName();
+        return new ReportingStructure(name, numberOfReports);
     }
 }
