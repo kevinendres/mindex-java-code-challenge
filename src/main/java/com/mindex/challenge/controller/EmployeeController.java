@@ -1,11 +1,10 @@
 package com.mindex.challenge.controller;
 
+import com.mindex.challenge.data.Compensation;
 import com.mindex.challenge.data.Employee;
 import com.mindex.challenge.data.ReportingStructure;
+import com.mindex.challenge.service.CompensationService;
 import com.mindex.challenge.service.EmployeeService;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,15 @@ import org.springframework.web.bind.annotation.*;
 public class EmployeeController {
     private static final Logger LOG = LoggerFactory.getLogger(EmployeeController.class);
 
+    private final EmployeeService employeeService;
+    private final CompensationService compensationService;
+
     @Autowired
-    private EmployeeService employeeService;
+    public EmployeeController(EmployeeService employeeService,
+        CompensationService compensationService) {
+        this.employeeService = employeeService;
+        this.compensationService = compensationService;
+    }
 
     @PostMapping("/employee")
     public Employee create(@RequestBody Employee employee) {
@@ -44,6 +50,21 @@ public class EmployeeController {
     public ReportingStructure getReportingStructure(@PathVariable String id) {
         LOG.debug("Received employee reporting structure request for id [{}]", id);
 
-        return employeeService.getReportingStructure(id);
+        return employeeService.generateReportingStructure(id);
+    }
+
+    @GetMapping("/employee/{id}/compensation")
+    public Compensation getCompensation(@PathVariable String id) {
+        LOG.debug("Received employee compensation get request for id [{}]", id);
+
+        return compensationService.read(id);
+    }
+
+    @PostMapping("/employee/{id}/compensation")
+    public Compensation createCompensation(@PathVariable String id, @RequestBody Compensation compensation) {
+        LOG.debug("Received employee compensation create request for id [{}]", id);
+
+        compensation.setEmployee(id);
+        return compensationService.create(compensation);
     }
 }
