@@ -1,15 +1,15 @@
 package com.mindex.challenge.data;
 
+import java.util.Objects;
+
 /*
   Class defining the number of reports for a given employee. The number of reports is calculated
-  transitively. This object is not persisted and must be recalculated on each request.
+  transitively. Instances of this class are not persisted and must be recalculated on each request.
 
   Assumptions:
-  The "employee" property should be the name of the employee, not their id. This is derived from the README where
-  the example is given "The numberOfReports for employee John Lennon..." combined with the explicit
-  name of the property being "employee."
+  The "employee" property should be the id of the employee
 
-  numberOfReports will not exceed Integer.MAX_VALUE.
+  numberOfReports will not exceed Integer.MAX_VALUE
  */
 public class ReportingStructure {
   private final String employee;
@@ -26,5 +26,23 @@ public class ReportingStructure {
 
   public int getNumberOfReports() {
     return numberOfReports;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ReportingStructure)) {
+      return false;
+    }
+    ReportingStructure that = (ReportingStructure) o;
+    return numberOfReports == that.numberOfReports && Objects.equals(employee,
+        that.employee);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(employee, numberOfReports);
   }
 }

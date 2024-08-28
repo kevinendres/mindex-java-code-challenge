@@ -17,7 +17,6 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final CompensationService compensationService;
 
-    @Autowired
     public EmployeeController(EmployeeService employeeService,
         CompensationService compensationService) {
         this.employeeService = employeeService;

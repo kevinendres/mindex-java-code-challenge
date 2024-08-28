@@ -33,7 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee read(String id) {
-        LOG.debug("Creating employee with id [{}]", id);
+        LOG.debug("Reading employee with id [{}]", id);
 
         Employee employee = employeeRepository.findByEmployeeId(id);
 
@@ -55,9 +55,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         Calculate the transitive total number of direct reports for a given employee.
      */
     @Override
-    public ReportingStructure getReportingStructure(String id) {
-        Employee employee = this.read(id);
+    public ReportingStructure generateReportingStructure(String id) {
+        LOG.debug("Generating reporting structure for employee [{}]", id);
 
+        Employee employee = read(id);
+        int numberOfReports = calculateNumReports(employee);
+        return new ReportingStructure(id, numberOfReports);
+    }
+
+    private int calculateNumReports(Employee employee) {
         int numberOfReports = 0;
         // Use DFS approach to traverse the reporting tree
         Deque<Employee> employeeStack = new ArrayDeque<>();
@@ -71,15 +77,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                     // Employee objects in the directReports list are stubs, i.e. they only contain
                     // the employeeId of the reports, not the full Employee record needed to check
                     // their directReports field
-                    Employee report = employeeRepository.findByEmployeeId(reportStub.getEmployeeId());
-                    if (report == null) {
-                        throw new RuntimeException("Invalid employeeId: " + reportStub.getEmployeeId());
-                    }
+                    Employee report = read(reportStub.getEmployeeId());
                     employeeStack.push(report);
                 }
             }
         }
-        String name = employee.getFirstName() + " " + employee.getLastName();
-        return new ReportingStructure(name, numberOfReports);
+        return numberOfReports;
     }
 }

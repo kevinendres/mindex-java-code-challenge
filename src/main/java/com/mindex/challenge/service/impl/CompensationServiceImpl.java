@@ -21,7 +21,9 @@ public class CompensationServiceImpl implements CompensationService {
   @Override
   public Compensation create(Compensation compensation) {
     LOG.debug("Creating compensation [{}]", compensation);
-
+    if (compensation.getSalary() < 0) {
+      compensation.setSalary(0);
+    }
     return compensationRepository.save(compensation);
   }
 
