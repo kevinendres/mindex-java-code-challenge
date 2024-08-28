@@ -1,7 +1,9 @@
 package com.mindex.challenge.service.impl;
 
 import com.mindex.challenge.data.Employee;
+import com.mindex.challenge.data.ReportingStructure;
 import com.mindex.challenge.service.EmployeeService;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,6 +77,34 @@ public class EmployeeServiceImplTest {
                         readEmployee.getEmployeeId()).getBody();
 
         assertEmployeeEquivalence(readEmployee, updatedEmployee);
+    }
+
+    public void testGenerateReportingStructure() {
+        Employee employee1 = new Employee();
+        employee1.setFirstName("John");
+        employee1.setLastName("Doe");
+        employee1.setDepartment("Engineering");
+        employee1.setPosition("Developer");
+
+        Employee employee2 = new Employee();
+        employee2.setFirstName("Jane");
+        employee2.setLastName("Smith");
+        employee2.setDepartment("Engineering");
+        employee2.setPosition("Developer");
+
+        employee1.setDirectReports(Collections.singletonList(employee2));
+
+        Employee createdEmployee1 = restTemplate.postForEntity(employeeUrl, employee1, Employee.class).getBody();
+        Employee createdEmployee2 = restTemplate.postForEntity(employeeUrl, employee2, Employee.class).getBody();
+
+        assertNotNull(createdEmployee1);
+        assertNotNull(createdEmployee2);
+
+        ReportingStructure actual = employeeService.generateReportingStructure(createdEmployee1.getEmployeeId());
+        assertEquals(new ReportingStructure(createdEmployee1.getEmployeeId(), 1), actual);
+
+        actual = employeeService.generateReportingStructure(createdEmployee1.getEmployeeId());
+        assertEquals(new ReportingStructure(createdEmployee2.getEmployeeId(), 0), actual);
     }
 
     private static void assertEmployeeEquivalence(Employee expected, Employee actual) {
