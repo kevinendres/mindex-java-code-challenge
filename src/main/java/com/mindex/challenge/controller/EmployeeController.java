@@ -7,7 +7,7 @@ import com.mindex.challenge.service.CompensationService;
 import com.mindex.challenge.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -46,6 +46,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/{id}/reportingStructure")
+    @ResponseStatus(HttpStatus.OK)
     public ReportingStructure getReportingStructure(@PathVariable String id) {
         LOG.debug("Received employee reporting structure request for id [{}]", id);
 
@@ -53,6 +54,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/{id}/compensation")
+    @ResponseStatus(HttpStatus.OK)
     public Compensation getCompensation(@PathVariable String id) {
         LOG.debug("Received employee compensation get request for id [{}]", id);
 
@@ -60,6 +62,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/employee/{id}/compensation")
+    @ResponseStatus(HttpStatus.CREATED)
     public Compensation createCompensation(@PathVariable String id, @RequestBody Compensation compensation) {
         LOG.debug("Received employee compensation create request for id [{}]", id);
 

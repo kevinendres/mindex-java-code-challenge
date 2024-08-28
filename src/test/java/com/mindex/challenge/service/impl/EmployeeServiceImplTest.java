@@ -88,7 +88,7 @@ public class EmployeeServiceImplTest {
 
         Employee employee2 = new Employee();
         employee2.setFirstName("Jane");
-        employee2.setLastName("Smith");
+        employee2.setLastName("Doe");
         employee2.setDepartment("Engineering");
         employee2.setPosition("Developer");
 

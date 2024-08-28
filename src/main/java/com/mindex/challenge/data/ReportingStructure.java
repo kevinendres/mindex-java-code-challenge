@@ -3,7 +3,7 @@ package com.mindex.challenge.data;
 import java.util.Objects;
 
 /*
-  Class defining the number of reports for a given employee. The number of reports is calculated
+  Class defining the number of reports for a specific employee. The number of reports is calculated
   transitively. Instances of this class are not persisted and must be recalculated on each request.
 
   Assumptions:

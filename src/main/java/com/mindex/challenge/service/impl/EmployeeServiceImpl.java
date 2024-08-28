@@ -52,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /*
-        Calculate the transitive total number of direct reports for a given employee.
+        Generate the reporting structure (total number of reports) for a given employee.
      */
     @Override
     public ReportingStructure generateReportingStructure(String id) {
@@ -63,9 +63,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new ReportingStructure(id, numberOfReports);
     }
 
+    /*
+        Calculate the transitive total number of reports for a given employee using DFS.
+     */
     private int calculateNumReports(Employee employee) {
         int numberOfReports = 0;
-        // Use DFS approach to traverse the reporting tree
+        // Use DFS to traverse the reporting tree
         Deque<Employee> employeeStack = new ArrayDeque<>();
         employeeStack.push(employee);
         while (!employeeStack.isEmpty()) {
@@ -76,7 +79,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 for (Employee reportStub : directReports) {
                     // Employee objects in the directReports list are stubs, i.e. they only contain
                     // the employeeId of the reports, not the full Employee record needed to check
-                    // their directReports field
+                    // their directReports field. Fetch full record for DFS
                     Employee report = read(reportStub.getEmployeeId());
                     employeeStack.push(report);
                 }

@@ -46,8 +46,11 @@ public class CompensationServiceImplTest {
     testEmployee.setDepartment("Engineering");
     testEmployee.setPosition("Developer");
 
-    Employee createdEmployee = restTemplate.postForEntity(employeeUrl, testEmployee, Employee.class)
-        .getBody();
+    Employee createdEmployee = restTemplate.postForEntity(
+        employeeUrl,
+        testEmployee,
+        Employee.class
+    ).getBody();
 
     assertNotNull(createdEmployee);
 

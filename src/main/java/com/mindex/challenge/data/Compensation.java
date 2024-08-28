@@ -2,9 +2,11 @@ package com.mindex.challenge.data;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /*
-  Class defining the salary for a given employee and the date that salary took effect.
+  Class defining the salary for a specific employee and the date that salary took effect.
 
   Assumptions:
   employee field must be a valid, extant employeeId.
@@ -13,7 +15,9 @@ import java.util.Objects;
 
   Dates in the past are acceptable (e.g. for retroactive raises).
  */
+@Document
 public class Compensation {
+  @Id
   private String employee;
   private int salary;
   private LocalDate effectiveDate;
